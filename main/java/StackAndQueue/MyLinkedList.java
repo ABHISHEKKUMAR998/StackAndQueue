@@ -1,27 +1,28 @@
 package StackAndQueue;
-public class MyLinkedList {
-	public INode head;
-	public INode tail;
+public class MyLinkedList<K extends Comparable<K>> {
+	public INode<K> head;
+	public INode<K> tail;
+
 	public MyLinkedList() {
 		this.head = null;
 		this.tail = null;
 	}
-	public void add(INode newNode) {
+
+	public void add(INode<K> newNode) {
 		if (this.tail == null) {
 			this.tail = newNode;
 		}
 		if (this.head == null) {
 			this.head = newNode;
 		} else {
-			INode tempNode = this.head;
+			INode<K> tempNode = this.head;
 			this.head = newNode;
 			this.head.setNext(tempNode);
 		}
 	}
 
-
 	public void printMyNode() {
-		StringBuffer myNodes = new StringBuffer("My Nodes: ");
+		StringBuffer myNodes = new StringBuffer("Nodes are: ");
 		INode tempNode = head;
 		while (tempNode.getNext() != null) {
 			myNodes.append(tempNode.getKey());
@@ -33,10 +34,7 @@ public class MyLinkedList {
 		System.out.println(myNodes);
 	}
 
-
-
-
-	public void append(INode myNode) {
+	public void append(INode<K> myNode) {
 		if (this.tail == null) {
 			this.tail = myNode;
 		}
@@ -48,23 +46,20 @@ public class MyLinkedList {
 		}
 	}
 
-
-	public void insert(INode myNode, INode newNode) {
+	public void insert(INode<K> myNode, INode<K> newNode) {
 		INode tempNode = myNode.getNext();
 		myNode.setNext(newNode);
 		newNode.setNext(tempNode);
 	}
 
-
-	public INode pop() {
+	public INode<K> pop() {
 		INode tempNode = this.head;
 		this.head = head.getNext();
 		return tempNode;
+
 	}
 
-
-
-	public INode popLast() {
+	public INode<K> popLast() {
 		INode tempNode = this.head;
 		while (!tempNode.getNext().equals(tail)) {
 			tempNode = tempNode.getNext();
@@ -74,9 +69,7 @@ public class MyLinkedList {
 		return tempNode;
 	}
 
-
-
-	public INode search(Integer key) {
+	public INode<K> search(Integer key) {
 		INode tempNode = this.head;
 		INode found = null;
 		while (tempNode != null && tempNode.getNext() != null) {
@@ -86,6 +79,17 @@ public class MyLinkedList {
 			tempNode = tempNode.getNext();
 		}
 		return found;
+	}
+
+	public void removeParticularNode(INode<K> deleteNode) {
+		INode tempNode = this.head;
+		INode prev = null;
+		while (tempNode != null && tempNode.getKey() != deleteNode.getKey()) {
+			prev = tempNode;
+			tempNode = tempNode.getNext();
+		}
+		prev.setNext(tempNode.getNext());
+		tempNode.setNext(null);
 	}
 
 	public int size() {
@@ -98,19 +102,34 @@ public class MyLinkedList {
 		return size;
 	}
 
-
-	public void removeParticularNode(INode deleteNode) {
-		INode tempNode = this.head;
-		INode prev = null;
-		while (tempNode != null && tempNode.getKey() != deleteNode.getKey()) {
-			prev = tempNode;
-			tempNode = tempNode.getNext();
+	public static <K extends Comparable<K>> boolean maximum(K x, K y) {
+		K max = x;
+		if (y.compareTo(max) > 0) {
+			return true;
+		} else {
+			return false;
 		}
-		prev.setNext(tempNode.getNext());
-		tempNode.setNext(null);
 	}
 
-
-
-
-}  
+	public <K extends Comparable<K>> void sortList() {
+		INode<K> current =(INode<K>) this.head;
+		INode<K> index = null;
+		K temp;
+		if (this.head == null)
+			return;
+		else {
+			while (current != null) {
+				index = current.getNext();
+				while (index != null) {
+					if (maximum(index.getKey(), current.getKey())) {
+						temp = current.getKey();
+						current.setKey(index.getKey());
+						index.setKey(temp);
+					}
+					index = index.getNext();
+				}
+				current = current.getNext();
+			}
+		}
+	}
+}
